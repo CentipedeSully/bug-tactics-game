@@ -6,6 +6,7 @@ namespace SullysToolkit.TableTop
 {
     public enum GamePieceType
     {
+        Unset,
         Terrain,
         PointOfInterest,
         Unit

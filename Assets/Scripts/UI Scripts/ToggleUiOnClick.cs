@@ -10,6 +10,13 @@ public class ToggleUiOnClick : MonoBehaviour
 
 
 
+    //monobehaviours
+    private void Start()
+    {
+        //hide menus on start
+        _targetUi.SetActive(false);
+    }
+
 
     //externals
     public void ToggleTargetUi()
