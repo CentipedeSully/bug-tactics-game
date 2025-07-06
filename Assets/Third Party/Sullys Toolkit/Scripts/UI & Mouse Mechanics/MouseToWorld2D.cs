@@ -8,7 +8,7 @@ namespace SullysToolkit
     {
         //Declarations
         [Header("Mouse Pointer Settings")]
-        [SerializeField] private Camera _cameraReferencePerspective;
+        private Camera _cameraReferencePerspective;
         [SerializeField] private float _zOverride = 0;
 
         [Header("Debugging Utils")]

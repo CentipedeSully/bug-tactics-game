@@ -27,30 +27,23 @@ namespace SullysToolkit
     {
         //Declarations
         [Header("Raycaster Settings")]
+        [SerializeField] private ReadInput _inputReader;
         [SerializeField] private string _RaycasterName = "Unnamed Selector";
         [SerializeField] private float _raycastDistance = 50;
         [SerializeField] private Vector3 _castDirection = Vector3.back;
         [SerializeField] private LayerMask _selectableLayers;
-        [SerializeField] private ISelectionCache<GameObject> _selectionCache;
         [SerializeField] private MouseToWorld2D _mouseToWorld2DReference;
 
         //Debugging
         [Header("Debugging Utils")]
         [SerializeField] private bool _isDebugActive;
         [SerializeField] private Color _gizmoColor;
-        [SerializeField] private bool _clearSelectionCmd;
 
 
         //Monos
-        private void Awake()
-        {
-            _selectionCache = GetComponent<ISelectionCache<GameObject>>();
-        }
-
         private void Update()
         {
-            ListenforDebugCommandsIfDebugActive();
-            ControlRaycasterViaMouseClicks();
+            RaycastFromMouse();
         }
 
         private void OnDrawGizmosSelected()
@@ -69,28 +62,6 @@ namespace SullysToolkit
             return Physics2D.Raycast(castOrigin, _castDirection,_raycastDistance,_selectableLayers);
         }
 
-        private void SetSelectionViaRaycast()
-        {
-            RaycastHit2D raycastData = CastRayFromMouse();
-            if (raycastData.collider != null)
-                _selectionCache.SetSelection(raycastData.collider.gameObject);
-            else ClearCurrentSelection();
-            
-        }
-
-        private void AddSelectionViaRaycast()
-        {
-            RaycastHit2D raycastData = CastRayFromMouse();
-            if (raycastData.collider != null)
-                _selectionCache.AddSelection(raycastData.collider.gameObject);
-            else ClearCurrentSelection();
-        }
-
-        private void ClearCurrentSelection()
-        {
-            _selectionCache.ClearSelection();
-        }
-
 
 
         //Getters, Setters, and Commands
@@ -99,25 +70,9 @@ namespace SullysToolkit
             return _RaycasterName;
         }
 
-        public ISelectionCache<GameObject> GetSelectionCache()
-        {
-            return _selectionCache;
-        }
-
-        public void SetSelectionCache(ISelectionCache<GameObject> newCache)
-        {
-            if (newCache != null)
-                _selectionCache = newCache;
-        }
-
         public LayerMask GetSelectableLayers()
         {
             return _selectableLayers;
-        }
-
-        public void SetSelectableLayers(LayerMask newLayerMask)
-        {
-            _selectableLayers = newLayerMask;
         }
 
 
@@ -142,25 +97,20 @@ namespace SullysToolkit
             Gizmos.DrawLine(debugLineStart, debugLineEnd);
         }
 
-        private void ListenforDebugCommandsIfDebugActive()
+        private void RaycastFromMouse()
         {
-            if (_isDebugActive)
+            if (_inputReader != null)
             {
-                if (_clearSelectionCmd)
+                if (_inputReader.LeftClick())
                 {
-                    _clearSelectionCmd = false;
-                    if (_selectionCache != null)
-                        _selectionCache.ClearSelection();
+                    RaycastHit2D hits = CastRayFromMouse();
+                    if (hits.collider != null)
+                    {
+                        Debug.Log($"Clicked on '{hits.collider.name}'");
+                    }
+                    
                 }
             }
-        }
-
-        private void ControlRaycasterViaMouseClicks()
-        {
-            if (Input.GetKey(KeyCode.Mouse0))
-                SetSelectionViaRaycast();
-            else if (Input.GetKey(KeyCode.Mouse1))
-                AddSelectionViaRaycast();
 
         }
 
