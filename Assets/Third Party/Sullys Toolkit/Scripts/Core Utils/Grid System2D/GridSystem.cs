@@ -104,7 +104,7 @@ namespace SullysToolkit
 
             else
             {
-                Debug.LogWarning($"{this} Warning: Position {position} not on Grid. Returning (-1,-1) cell position");
+                //Debug.LogWarning($"{this} Warning: Position {position} not on Grid. Returning (-1,-1) cell position");
                 return (-1, -1);
             }
         }

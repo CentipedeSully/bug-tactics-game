@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ee2eda333b4ee40a01f3b8a5d0d305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _typeOfGamepiece: 0
+  _typeOfGamepiece: 1
   _isInPlay: 0
   _bagOfHolding: {fileID: 0}
   _gameBoard: {fileID: 0}

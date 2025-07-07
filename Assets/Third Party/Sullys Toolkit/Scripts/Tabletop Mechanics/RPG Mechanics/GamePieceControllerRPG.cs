@@ -2,32 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 
 namespace SullysToolkit.TableTop.RPG
 {
-    public class GamePieceControllerRPG : MonoBehaviour, ITurnListener, ISelectionCache<GameObject>
+    public class GamePieceControllerRPG : MonoBehaviour, ITurnListener
     {
         //Declarations
         [Header("Controller Settings")]
         [SerializeField] private TurnPhase _controlsUnlockedPhase;
         [SerializeField] private bool _isControlAvailable = false;
 
-        [Header("Selection Settings")]
-        [SerializeField] private bool _isSelectorReady = true;
-        [SerializeField] private float _selectionCooldown = .35f;
+        [Header("Cast & Detection Settings")]
+        [SerializeField] private bool _isCasterReady = true;
+        [SerializeField] private float _casterCooldown = .35f;
         [Tooltip("The first element takes priority over what will get shown. " +
             "If the gamepiece of that type doesn't exist, then the gamepiece of the next proiority will be displayed instead.")]
         [SerializeField] private List<GamePieceType> _displayPriorityList;
         [SerializeField] [Min(-1)] private int _selectedPositionX = -1;
         [SerializeField] [Min(-1)] private int _selectedPositionY = -1;
-        [SerializeField] private GamePiece _unitOnSelectedPosition;
-        [SerializeField] private GamePiece _poiOnSelectedPosition;
-        [SerializeField] private GamePiece _terrainOnSelectedPosition;
+        [SerializeField] [Min(-1)] private int _hoveredPositionX = -1;
+        [SerializeField] [Min(-1)] private int _hoveredPositionY = -1;
+        [SerializeField] private GamePiece _unitOnCastPosition;
+        [SerializeField] private GamePiece _poiOnCastPosition;
+        [SerializeField] private GamePiece _terrainOnCastPosition;
 
 
 
 
         [Header("References")]
+        [SerializeField] private ReadInput _inputReader;
         [SerializeField] private TurnSystem _turnSystem;
         [SerializeField] private GameBoard _gameBoard;
         [SerializeField] private MouseToWorld2D _mouseToWorldTrackerRef;
@@ -37,71 +41,58 @@ namespace SullysToolkit.TableTop.RPG
 
 
         //Events
-        public delegate void SelectionEventWithContext(GamePiece selectedPiece);
-        public delegate void SelectionEvent();
-        public event SelectionEventWithContext OnSelectionCaptured;
-        public event SelectionEvent OnSelectionCleared;
-        public event SelectionEvent OnActionPerformed;
 
 
 
         //Monobehaviours
-        private void Awake()
-        {
-            
-        }
 
         private void Update()
         {
-            ListenForSelectionCommands();
+            UpdateHoverPosition();
+            ListenForInputCommands();
         }
 
 
         //Internal Utils
-        private void ListenForSelectionCommands()
+        private void UpdateHoverPosition()
         {
-            //Left Click -> 0
-            //Right Click -> 1
-            //Middle Click -> 2
+            (int, int) xyHoverPosition = _gameBoard.GetGrid().GetCellFromPosition(_mouseToWorldTrackerRef.GetWorldPosition());
 
-            if (Input.GetMouseButtonDown(0) && _isSelectorReady)
+            if (xyHoverPosition != (-1, -1))
             {
-                CooldownSelection();
-                STKDebugLogger.LogStatement(_isDebugActive, $"Left-click detected. Determining contextual selection request...");
+                _hoveredPositionX = xyHoverPosition.Item1;
+                _hoveredPositionY = xyHoverPosition.Item2;
+            }
+            else
+            {
+                _hoveredPositionX = -1;
+                _hoveredPositionY = -1;
+            }
+        }
+
+        private void ListenForInputCommands()
+        {
+            //Capture all game Pieces on the mouse's position
+            if (_inputReader.LeftClick() && _isCasterReady)
+            {
+                CooldownCaster();
                 (int, int) xySelectedPosition = _gameBoard.GetGrid().GetCellFromPosition(_mouseToWorldTrackerRef.GetWorldPosition());
 
-                if (xySelectedPosition == (-1,-1))
-                {
-                    STKDebugLogger.LogStatement(_isDebugActive, $"Clearing selection data due to clicking off of game grid");
-                    ClearSelection();
-                    OnSelectionCleared?.Invoke();
-                }
-
-                else
+                if (xySelectedPosition != (-1, -1))
                 {
                     STKDebugLogger.LogStatement(_isDebugActive, $"Capturing new Selection data...");
                     ClearSelection();
 
                     CaptureSelectionViaMousePosition();
-                    DisplaySelectedGamePieceOfHighestPriority();
-                    OnSelectionCaptured?.Invoke(GetHighestPrioritySelection());
+                    Debug.Log($"Captured Pieces: \n{_unitOnCastPosition}\n{_poiOnCastPosition}\n{_terrainOnCastPosition}");
                 }
+                else Debug.Log("Off grid LClick");
             }
 
-            else if (Input.GetMouseButtonDown(1) && _isSelectorReady && IsSelectionAvailable() && _isControlAvailable)
+            //Clear the Current capture data
+            else if (_inputReader.RightClick())
             {
-                CooldownSelection();
-                STKDebugLogger.LogStatement(_isDebugActive, $"Right-click detected. Determining contextual action request...");
-                (int, int) xySelectedPosition = _gameBoard.GetGrid().GetCellFromPosition(_mouseToWorldTrackerRef.GetWorldPosition());
-
-                if (xySelectedPosition == (-1, -1))
-                    STKDebugLogger.LogStatement(_isDebugActive, $"Ignoring contextual action request due to target being off game grid");
-
-                else
-                {
-                    STKDebugLogger.LogStatement(_isDebugActive, $"Right Click on good position. Unimplemented, but good ^_^");
-                    OnActionPerformed?.Invoke();
-                }
+                
             }
         }
 
@@ -113,9 +104,9 @@ namespace SullysToolkit.TableTop.RPG
             _selectedPositionX = xySelection.Item1;
             _selectedPositionY = xySelection.Item2;
 
-            _unitOnSelectedPosition = GetUnitOnPosition(_selectedPositionX, _selectedPositionY);
-            _poiOnSelectedPosition = GetPoiOnPosition(_selectedPositionX, _selectedPositionY);
-            _terrainOnSelectedPosition = GetTerrainOnPosition(_selectedPositionX, _selectedPositionY);
+            _unitOnCastPosition = GetUnitOnPosition(_selectedPositionX, _selectedPositionY);
+            _poiOnCastPosition = GetPoiOnPosition(_selectedPositionX, _selectedPositionY);
+            _terrainOnCastPosition = GetTerrainOnPosition(_selectedPositionX, _selectedPositionY);
         }
 
         private void DisplaySelectedGamePieceOfHighestPriority()
@@ -124,21 +115,21 @@ namespace SullysToolkit.TableTop.RPG
             for (int i = 0; i < _displayPriorityList.Count; i++)
             {
 
-                if (_displayPriorityList[i] == GamePieceType.Unit && _unitOnSelectedPosition != null)
+                if (_displayPriorityList[i] == GamePieceType.Unit && _unitOnCastPosition != null)
                 {
-                    DisplayGamePieceData(_unitOnSelectedPosition);
+                    DisplayGamePieceData(_unitOnCastPosition);
                     return;
                 }
 
-                else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnSelectedPosition != null)
+                else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnCastPosition != null)
                 {
-                    DisplayGamePieceData(_poiOnSelectedPosition);
+                    DisplayGamePieceData(_poiOnCastPosition);
                     return;
                 }
 
-                else if (_displayPriorityList[i] == GamePieceType.Terrain && _terrainOnSelectedPosition != null)
+                else if (_displayPriorityList[i] == GamePieceType.Terrain && _terrainOnCastPosition != null)
                 {
-                    DisplayGamePieceData(_terrainOnSelectedPosition);
+                    DisplayGamePieceData(_terrainOnCastPosition);
                     return;
                 }
             }
@@ -152,14 +143,14 @@ namespace SullysToolkit.TableTop.RPG
             for (int i = 0; i < _displayPriorityList.Count; i++)
             {
 
-                if (_displayPriorityList[i] == GamePieceType.Unit && _unitOnSelectedPosition != null)
-                    return _unitOnSelectedPosition;
+                if (_displayPriorityList[i] == GamePieceType.Unit && _unitOnCastPosition != null)
+                    return _unitOnCastPosition;
 
-                else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnSelectedPosition != null)
-                    return _poiOnSelectedPosition;
+                else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnCastPosition != null)
+                    return _poiOnCastPosition;
 
-                else if (_displayPriorityList[i] == GamePieceType.Terrain && _terrainOnSelectedPosition != null)
-                    return _terrainOnSelectedPosition;
+                else if (_displayPriorityList[i] == GamePieceType.Terrain && _terrainOnCastPosition != null)
+                    return _terrainOnCastPosition;
             }
 
             STKDebugLogger.LogStatement(_isDebugActive, $"No Selection exists. Returning null");
@@ -235,59 +226,32 @@ namespace SullysToolkit.TableTop.RPG
         {
             STKDebugLogger.LogStatement(_isDebugActive, $"Getting Terrain on position ({x},{y})...");
             List<GamePiece> allPiecesOnPosition = _gameBoard.GetPiecesOnPosition((x, y));
+            Debug.Log("All Pieces on Position: " + allPiecesOnPosition.Count);
 
-            IEnumerable<GamePiece> terrainQuery =
-                from piece in allPiecesOnPosition
-                where piece.GetGamePieceType() == GamePieceType.Terrain
-                select piece;
-
-            if (terrainQuery.Any())
+            foreach(GamePiece gp in allPiecesOnPosition)
             {
-                STKDebugLogger.LogStatement(_isDebugActive, $"Terrain Detected: {terrainQuery.First().name}, ID: {terrainQuery.First().GetInstanceID()}");
-                return terrainQuery.First();
+                Debug.Log($"Checking if {gp.name} is a terrain");
+                if (gp.GetGamePieceType() == GamePieceType.Terrain)
+                {
+                    Debug.Log($"It is. returning {gp.name}");
+                    return gp;
+                }
+
+                Debug.Log($"Not a Terrain piece");
             }
 
-            else
-            {
-                STKDebugLogger.LogStatement(_isDebugActive, $"No Terrain Detected");
-                return null;
-            }
+            return null;
         }
 
-        private void MoveGamePieceInDirection(GamePiece movingPiece,(int,int) xyDirection)
+        private void CooldownCaster()
         {
-            STKDebugLogger.LogStatement(_isDebugActive, $"Attempting to move gamePiece ({movingPiece?.name},ID: {movingPiece?.GetInstanceID()})");
-            IMoveableRPGPiece validatedMoveablePiece = movingPiece?.GetComponent<IMoveableRPGPiece>();
-            if (validatedMoveablePiece != null)
-                validatedMoveablePiece.MoveToNeighborCell(xyDirection);
-            else
-                STKDebugLogger.LogStatement(_isDebugActive,$"GamePiece Controller attempted to move a null Piece. Ignoring Command");
+            _isCasterReady = false;
+            Invoke(nameof(ReadyCaster), _casterCooldown);
         }
 
-        private void PerformInteractionBtwnGamePieces(GamePiece actorPiece, GamePiece subjectPiece)
+        private void ReadyCaster()
         {
-            STKDebugLogger.LogStatement(_isDebugActive, $"Attempting to perform an interaction btwn gamePieces: \n" +
-                $"Actor ({actorPiece?.name}, ID: {actorPiece?.GetInstanceID()})\n" +
-                $"Subject ({subjectPiece?.name}, ID: {subjectPiece?.GetInstanceID()})");
-
-            IRPGInteractablePiece validatedInteractablePiece = subjectPiece?.GetComponent<IRPGInteractablePiece>();
-
-            if (validatedInteractablePiece != null)
-                validatedInteractablePiece.TriggerInteractionEvent(actorPiece);
-
-            else
-                STKDebugLogger.LogStatement(_isDebugActive, $"GamePiece Controller attempted to perform an interact onto a null piece. Ignoring Command");
-        }
-
-        private void CooldownSelection()
-        {
-            _isSelectorReady = false;
-            Invoke("ReadySelector", _selectionCooldown);
-        }
-
-        private void ReadySelector()
-        {
-            _isSelectorReady = true;
+            _isCasterReady = true;
         }
 
         private void DisplayGamePieceData(GamePiece piece)
@@ -370,27 +334,27 @@ namespace SullysToolkit.TableTop.RPG
 
         public void ClearSelection()
         {
-            if (_unitOnSelectedPosition != null)
+            if (_unitOnCastPosition != null)
             {
-                HideGamePieceData(_unitOnSelectedPosition);
-                _unitOnSelectedPosition = null;
+                HideGamePieceData(_unitOnCastPosition);
+                _unitOnCastPosition = null;
             }
 
-            if (_poiOnSelectedPosition != null)
+            if (_poiOnCastPosition != null)
             {
-                HideGamePieceData(_poiOnSelectedPosition);
-                _poiOnSelectedPosition = null;
+                HideGamePieceData(_poiOnCastPosition);
+                _poiOnCastPosition = null;
             }
 
-            if (_terrainOnSelectedPosition != null)
+            if (_terrainOnCastPosition != null)
             {
-                HideGamePieceData(_terrainOnSelectedPosition);
-                _terrainOnSelectedPosition = null;
+                HideGamePieceData(_terrainOnCastPosition);
+                _terrainOnCastPosition = null;
             }
         }
 
 
-        public GameObject GetSelection()
+        public GameObject GetDetectedPiece()
         {
             return GetHighestPrioritySelection().gameObject;
         }
@@ -404,14 +368,14 @@ namespace SullysToolkit.TableTop.RPG
         {
             List<GameObject> returnList = new List<GameObject>();
 
-            if (_unitOnSelectedPosition != null)
-                returnList.Add(_unitOnSelectedPosition.gameObject);
+            if (_unitOnCastPosition != null)
+                returnList.Add(_unitOnCastPosition.gameObject);
 
-            if (_poiOnSelectedPosition != null)
-                returnList.Add(_poiOnSelectedPosition.gameObject);
+            if (_poiOnCastPosition != null)
+                returnList.Add(_poiOnCastPosition.gameObject);
 
-            if (_terrainOnSelectedPosition != null)
-                returnList.Add(_terrainOnSelectedPosition.gameObject);
+            if (_terrainOnCastPosition != null)
+                returnList.Add(_terrainOnCastPosition.gameObject);
 
             return returnList;
            
@@ -429,9 +393,9 @@ namespace SullysToolkit.TableTop.RPG
 
         public bool IsSelectionAvailable()
         {
-            bool unitExists = _unitOnSelectedPosition != null;
-            bool poiExists = _poiOnSelectedPosition != null;
-            bool terrainExists = _terrainOnSelectedPosition != null;
+            bool unitExists = _unitOnCastPosition != null;
+            bool poiExists = _poiOnCastPosition != null;
+            bool terrainExists = _terrainOnCastPosition != null;
 
             return unitExists || poiExists || terrainExists;
         }
