@@ -10,6 +10,10 @@ public class VisualizeDevCommand : MonoBehaviour
 
 
     //monobehaviours
+    private void Start()
+    {
+        HideAllindicators();
+    }
     private void OnEnable()
     {
         DevCommandTracker.OnCommandStateEntered += UpdateCmdText;

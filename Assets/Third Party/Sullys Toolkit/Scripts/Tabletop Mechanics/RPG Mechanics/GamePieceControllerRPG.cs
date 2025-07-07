@@ -72,6 +72,9 @@ namespace SullysToolkit.TableTop.RPG
 
         private void ListenForInputCommands()
         {
+            
+
+
             //Capture all game Pieces on the mouse's position
             if (_inputReader.LeftClick() && _isCasterReady)
             {
@@ -80,19 +83,34 @@ namespace SullysToolkit.TableTop.RPG
 
                 if (xySelectedPosition != (-1, -1))
                 {
+                    //Perform the current DevCommand if any is active
+                    if (IsDevCommandLoaded())
+                    {
+                        Debug.Log($"'{DevCommandTracker.CurrentCommand()}' executed (pretend it executed)");
+                        //End this frame's progression
+                        return;
+                    }
+                    
+
+
                     STKDebugLogger.LogStatement(_isDebugActive, $"Capturing new Selection data...");
                     ClearSelection();
 
                     CaptureSelectionViaMousePosition();
-                    Debug.Log($"Captured Pieces: \n{_unitOnCastPosition}\n{_poiOnCastPosition}\n{_terrainOnCastPosition}");
+                    //Debug.Log($"Captured Pieces: \n{_unitOnCastPosition}\n{_poiOnCastPosition}\n{_terrainOnCastPosition}");
                 }
-                else Debug.Log("Off grid LClick");
+
             }
 
             //Clear the Current capture data
-            else if (_inputReader.RightClick())
+            else if (_inputReader.RightClick() && _isCasterReady)
             {
-                
+                CooldownCaster();
+
+
+                //Clear the current dev command, if any is active
+                if (IsDevCommandLoaded())
+                    DevCommandTracker.ClearCurrentCommand();
             }
         }
 
@@ -226,18 +244,18 @@ namespace SullysToolkit.TableTop.RPG
         {
             STKDebugLogger.LogStatement(_isDebugActive, $"Getting Terrain on position ({x},{y})...");
             List<GamePiece> allPiecesOnPosition = _gameBoard.GetPiecesOnPosition((x, y));
-            Debug.Log("All Pieces on Position: " + allPiecesOnPosition.Count);
+            //Debug.Log("All Pieces on Position: " + allPiecesOnPosition.Count);
 
             foreach(GamePiece gp in allPiecesOnPosition)
             {
-                Debug.Log($"Checking if {gp.name} is a terrain");
+                //Debug.Log($"Checking if {gp.name} is a terrain");
                 if (gp.GetGamePieceType() == GamePieceType.Terrain)
                 {
-                    Debug.Log($"It is. returning {gp.name}");
+                    //Debug.Log($"It is. returning {gp.name}");
                     return gp;
                 }
 
-                Debug.Log($"Not a Terrain piece");
+                //Debug.Log($"Not a Terrain piece");
             }
 
             return null;
@@ -282,7 +300,10 @@ namespace SullysToolkit.TableTop.RPG
                 
         }
 
-
+        private bool IsDevCommandLoaded()
+        {
+            return DevCommandTracker.DevModeActive() && DevCommandTracker.CurrentCommand() != DevCommandState.unset;
+        }
 
 
 
