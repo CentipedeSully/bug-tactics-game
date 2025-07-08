@@ -16,7 +16,7 @@ public class ReadInput : MonoBehaviour
         if (context.performed )
         {
             _lClick = true;
-            Debug.Log("LClick");
+            //Debug.Log("LClick");
         }
         else _lClick = false;
     }
@@ -26,7 +26,7 @@ public class ReadInput : MonoBehaviour
         if (context.performed)
         {
             _rClick = true;
-            Debug.Log("RClick");
+            //Debug.Log("RClick");
         }
         else _rClick = false;
     }

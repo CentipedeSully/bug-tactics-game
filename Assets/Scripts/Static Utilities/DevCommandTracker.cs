@@ -9,16 +9,17 @@ public enum DevCommandState
 {
     unset,
     SpawnObject,
-    DespawnObject
+    DespawnObject,
+    DamageUnit
 }
 public static class DevCommandTracker
 {
     //Declarations
     private static bool _devMode = true;
     private static DevCommandState _currentCommand;
-    private static string _spawnName;
-    private static GamePieceType _spawnType;
-    private static GamePieceType _despawnTarget;
+    private static string _specifiedName;
+    private static GamePieceType _specifiedType;
+    private static int _specifiedValue;
 
     public delegate void DevModeEvent();
     public static event DevModeEvent OnDevModeEntered;
@@ -34,9 +35,9 @@ public static class DevCommandTracker
     private static void ClearCommandUtils()
     {
         _currentCommand = DevCommandState.unset;
-        _spawnName = "";
-        _spawnType = GamePieceType.Unset;
-        _despawnTarget = GamePieceType.Unset;
+        _specifiedName = "";
+        _specifiedType = GamePieceType.Unset;
+        _specifiedValue = 0;
     }
 
 
@@ -44,9 +45,9 @@ public static class DevCommandTracker
     //Externals
     public static bool DevModeActive() { return _devMode; }
     public static DevCommandState CurrentCommand() { return _currentCommand; }
-    public static GamePieceType GetSpawnType() {  return _spawnType; }
-    public static string GetSpawnName() {  return _spawnName; }
-    public static GamePieceType GetDespawnTarget() { return _despawnTarget; }
+    public static GamePieceType GetSpecifiedType() {  return _specifiedType; }
+    public static string GetSpecifiedName() {  return _specifiedName; }
+    public static int GetSpecifiedValue() { return _specifiedValue; }
 
     public static void ExitDevMode()
     {
@@ -60,13 +61,13 @@ public static class DevCommandTracker
 
         if (_devMode)
         {
-            Debug.Log("Entered DevMode");
+            //Debug.Log("Entered DevMode");
             OnDevModeEntered?.Invoke();
         }
             
         else
         {
-            Debug.Log("Exited DevMode");
+            //Debug.Log("Exited DevMode");
             OnDevModeExited?.Invoke();
         }
     }
@@ -84,8 +85,8 @@ public static class DevCommandTracker
             _currentCommand = DevCommandState.SpawnObject;
         }
 
-        _spawnName = name;
-        _spawnType = type;
+        _specifiedName = name;
+        _specifiedType = type;
 
         OnCommandStateEntered?.Invoke(_currentCommand);
     }
@@ -98,7 +99,20 @@ public static class DevCommandTracker
             _currentCommand = DevCommandState.DespawnObject;
         }
 
-        _despawnTarget = targetType;
+        _specifiedType = targetType;
+
+        OnCommandStateEntered?.Invoke(_currentCommand);
+    }
+    public static void EnterDamageUnitMode(int value)
+    {
+        if (_currentCommand != DevCommandState.DamageUnit)
+        {
+            ClearCommandUtils();
+
+            _currentCommand = DevCommandState.DamageUnit;
+        }
+
+        _specifiedValue = value;
 
         OnCommandStateEntered?.Invoke(_currentCommand);
     }

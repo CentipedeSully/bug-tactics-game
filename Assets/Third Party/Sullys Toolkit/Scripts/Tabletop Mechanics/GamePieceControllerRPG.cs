@@ -87,38 +87,7 @@ namespace SullysToolkit.TableTop.RPG
                     //Perform the current DevCommand if any is active
                     if (IsDevCommandLoaded())
                     {
-                        switch (DevCommandTracker.CurrentCommand())
-                        {
-                            //attempt to spawn the current dev selection
-                            case DevCommandState.SpawnObject:
-                                _bagOfHolding.SpawnGamePiece(DevCommandTracker.GetSpawnName(), DevCommandTracker.GetSpawnType(), xySelectedPosition);
-                                break;
-
-                            //attempt to despawn the current dev selection
-                            case DevCommandState.DespawnObject:
-
-                                CaptureSelectionViaMousePosition();
-
-                                switch (DevCommandTracker.GetDespawnTarget())
-                                {
-                                    case GamePieceType.Terrain:
-                                        if (_terrainOnCastPosition != null)
-                                            _terrainOnCastPosition.Despawn();
-                                        break;
-
-                                    case GamePieceType.PointOfInterest:
-                                        if (_poiOnCastPosition != null)
-                                            _poiOnCastPosition.Despawn();
-                                        break;
-
-                                    case GamePieceType.Unit:
-                                        if (_unitOnCastPosition != null)
-                                            _unitOnCastPosition.Despawn();
-                                        break;
-
-                                }
-                                break;
-                        }
+                        ExecuteDevCommand(xySelectedPosition);
                         return;
                     }
 
@@ -275,6 +244,57 @@ namespace SullysToolkit.TableTop.RPG
             return DevCommandTracker.DevModeActive() && DevCommandTracker.CurrentCommand() != DevCommandState.unset;
         }
 
+        private void ExecuteDevCommand((int,int)targetPosition)
+        {
+            switch (DevCommandTracker.CurrentCommand())
+            {
+                //SPAWN SPECIFIED GP
+                case DevCommandState.SpawnObject:
+                    _bagOfHolding.SpawnGamePiece(DevCommandTracker.GetSpecifiedName(), DevCommandTracker.GetSpecifiedType(), targetPosition);
+                    break;
+
+
+
+                //DESPAWN SPECIFIED GP
+                case DevCommandState.DespawnObject:
+
+                    CaptureSelectionViaMousePosition();
+
+                    switch (DevCommandTracker.GetSpecifiedType())
+                    {
+                        case GamePieceType.Terrain:
+                            if (_terrainOnCastPosition != null)
+                                _terrainOnCastPosition.Despawn();
+                            break;
+
+                        case GamePieceType.PointOfInterest:
+                            if (_poiOnCastPosition != null)
+                                _poiOnCastPosition.Despawn();
+                            break;
+
+                        case GamePieceType.Unit:
+                            if (_unitOnCastPosition != null)
+                                _unitOnCastPosition.Despawn();
+                            break;
+
+                    }
+
+                    break;
+
+
+
+                //DAMAGE SPECIFIED GP
+                case DevCommandState.DamageUnit:
+
+                    CaptureSelectionViaMousePosition();
+                    if (_unitOnCastPosition != null)
+                        _unitOnCastPosition.GetComponent<UnitAttributes>().TakeDamage(DevCommandTracker.GetSpecifiedValue());
+                    break;
+
+
+
+            }
+        }
 
 
         //Getters, Setters, & Commands

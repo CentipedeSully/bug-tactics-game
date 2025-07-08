@@ -45,7 +45,7 @@ public class BagOfHolding : MonoBehaviour
         //Make sure the type is set
         if (type == GamePieceType.Unset)
         {
-            Debug.LogError($"Spawn Request for '{name}' Denied. Request provided an UNSET type");
+            Debug.LogWarning($"Spawn Request for '{name}' Denied. Request provided an UNSET type");
             return false;
         }
 
@@ -55,7 +55,7 @@ public class BagOfHolding : MonoBehaviour
             case GamePieceType.Terrain:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.Terrain))
                 {
-                    Debug.LogError($"Spawn Request for '{name}' Denied. Terrain position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Terrain position {position} already occupied");
                     return false;
                 }    
                 break;
@@ -63,7 +63,7 @@ public class BagOfHolding : MonoBehaviour
             case GamePieceType.PointOfInterest:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.PointsOfInterest))
                 {
-                    Debug.LogError($"Spawn Request for '{name}' Denied. Poi position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Poi position {position} already occupied");
                     return false;
                 }
                 break;
@@ -71,7 +71,7 @@ public class BagOfHolding : MonoBehaviour
             case GamePieceType.Unit:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.Units))
                 {
-                    Debug.LogError($"Spawn Request for '{name}' Denied. Unit position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Unit position {position} already occupied");
                     return false;
                 }
                 break;
@@ -80,7 +80,7 @@ public class BagOfHolding : MonoBehaviour
         //Make sure the request object exists in the dataObject
         if (!_gpCreator.DoesPieceExist(name, type))
         {
-            Debug.LogError($"Spawn Request for {type} gamePiece '{name}' Denied. Requested gamePiece doesn't exist within the GamePieceData Asset");
+            Debug.LogWarning($"Spawn Request for {type} gamePiece '{name}' Denied. Requested gamePiece doesn't exist within the GamePieceData Asset");
             return false;
         }
 
@@ -94,15 +94,15 @@ public class BagOfHolding : MonoBehaviour
         switch (type)
         {
             case GamePieceType.Terrain:
-                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveTerrains[name].Count}");
+                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveTerrains[name].Count}");
                 break;
 
             case GamePieceType.PointOfInterest:
-                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactivePois[name].Count}");
+                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactivePois[name].Count}");
                 break;
 
             case GamePieceType.Unit:
-                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveUnits[name].Count}");
+                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveUnits[name].Count}");
                 break;
         }
 
@@ -111,21 +111,21 @@ public class BagOfHolding : MonoBehaviour
         {
             _gpCreator.CreateNewGamePiece(name, type);
             stock++;
-            Debug.Log($"Stock Successful");
+            //Debug.Log($"Stock Successful");
         }
 
         switch (type)
         {
             case GamePieceType.Terrain:
-                Debug.Log($"New Stock Level: {_inactiveTerrains[name].Count}");
+                //Debug.Log($"New Stock Level: {_inactiveTerrains[name].Count}");
                 break;
 
             case GamePieceType.PointOfInterest:
-                Debug.Log($"New Stock Level: {_inactivePois[name].Count}");
+                //Debug.Log($"New Stock Level: {_inactivePois[name].Count}");
                 break;
 
             case GamePieceType.Unit:
-                Debug.Log($"New Stock Level: {_inactiveUnits[name].Count}");
+                //Debug.Log($"New Stock Level: {_inactiveUnits[name].Count}");
                 break;
         }
 
@@ -149,7 +149,7 @@ public class BagOfHolding : MonoBehaviour
             //check if the gamePiece is valid
             if (type == GamePieceType.Unset)
             {
-                Debug.LogError($"Attempted to store a gamePiece of Unset type ({pieceName})");
+                Debug.LogWarning($"Attempted to store a gamePiece of Unset type ({pieceName})");
                 return;
             }
 
@@ -193,8 +193,8 @@ public class BagOfHolding : MonoBehaviour
 
             }
 
-            Debug.Log($"Stored {pieceName} in BagOfHolding");
-            LogContents();
+            //Debug.Log($"Stored {pieceName} in BagOfHolding");
+            //LogContents();
         }
     }
 
@@ -204,7 +204,7 @@ public class BagOfHolding : MonoBehaviour
         if (!IsSpawnRequestValid(name, type, position))
             return;
 
-        Debug.Log($"Spawn Requested: {type} '{name}'");
+        //Debug.Log($"Spawn Requested: {type} '{name}'");
         GameObject pieceObject = null;
 
         //Check the appropriate collection
@@ -223,7 +223,7 @@ public class BagOfHolding : MonoBehaviour
                 //halt if we've failed to restock the requested piece
                 if (_inactiveTerrains[name].Count == 0)
                 {
-                    Debug.LogError($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
                     return;
                 }
 
@@ -249,7 +249,7 @@ public class BagOfHolding : MonoBehaviour
                 //halt if we've failed to restock the requested piece
                 if (_inactivePois[name].Count == 0)
                 {
-                    Debug.LogError($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
                     return;
                 }
 
@@ -275,7 +275,7 @@ public class BagOfHolding : MonoBehaviour
                 //halt if we've failed to restock the requested piece
                 if (_inactiveUnits[name].Count == 0)
                 {
-                    Debug.LogError($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
                     return;
                 }
 
@@ -290,7 +290,7 @@ public class BagOfHolding : MonoBehaviour
 
         }
 
-        Debug.Log($"Spawn Fulfillment Over for {type} '{name}'");
+        //Debug.Log($"Spawn Fulfillment Over for {type} '{name}'");
     }
 
     public GameBoard GameBoard() { return _board; }

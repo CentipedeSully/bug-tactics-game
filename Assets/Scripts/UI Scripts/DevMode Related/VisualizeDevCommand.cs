@@ -38,13 +38,17 @@ public class VisualizeDevCommand : MonoBehaviour
                 break;
 
             case DevCommandState.SpawnObject:
-                _cmdText.text = $"Spawn {DevCommandTracker.GetSpawnName()} ({DevCommandTracker.GetSpawnType()})";
+                _cmdText.text = $"Spawn {DevCommandTracker.GetSpecifiedName()} ({DevCommandTracker.GetSpecifiedType()})";
                 ShowAllIndicators();
                 break;
 
             case DevCommandState.DespawnObject:
-                _cmdText.text = $"Despawn {DevCommandTracker.GetDespawnTarget()}";
+                _cmdText.text = $"Despawn {DevCommandTracker.GetSpecifiedType()}";
                 ShowAllIndicators();
+                break;
+
+            case DevCommandState.DamageUnit:
+                _cmdText.text = $"Damage Unit by {DevCommandTracker.GetSpecifiedValue()}";
                 break;
         }
     }

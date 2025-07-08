@@ -64,7 +64,7 @@ namespace SullysToolkit.TableTop
                 return true;
             }
 
-            Debug.Log($"{gameObject.name} attempted to leave play as a gamePiece, but it isn't in play");
+            Debug.LogWarning($"{gameObject.name} attempted to leave play as a gamePiece, but it isn't in play");
             return false;
         }
 
@@ -90,13 +90,13 @@ namespace SullysToolkit.TableTop
 
             if (!_isInitialized)
             {
-                Debug.Log($"{gameObject.name} attempted to enter play without being initialized. " +
+                Debug.LogWarning($"{gameObject.name} attempted to enter play without being initialized. " +
                                     $"Call 'InitializeGamePiece' to allow other potential creation scripts a chance to run " +
                                     $"before attempting to put the gamePiece on the board");
             }
             
             else 
-                Debug.Log($"{gameObject.name} attempted to enter play as a gamePiece, but detected invalid 'EnterPlay' parameter(s). Ignoring Request");
+                Debug.LogWarning($"{gameObject.name} attempted to enter play as a gamePiece, but detected invalid 'EnterPlay' parameter(s). Ignoring Request");
             return false;
 
         }
