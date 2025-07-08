@@ -16,7 +16,8 @@ public static class DevCommandTracker
     //Declarations
     private static bool _devMode = true;
     private static DevCommandState _currentCommand;
-    private static GameObject _spawnObject;
+    private static string _spawnName;
+    private static GamePieceType _spawnType;
     private static GamePieceType _despawnTarget;
 
     public delegate void DevModeEvent();
@@ -33,7 +34,8 @@ public static class DevCommandTracker
     private static void ClearCommandUtils()
     {
         _currentCommand = DevCommandState.unset;
-        _spawnObject = null;
+        _spawnName = "";
+        _spawnType = GamePieceType.Unset;
         _despawnTarget = GamePieceType.Unset;
     }
 
@@ -42,7 +44,8 @@ public static class DevCommandTracker
     //Externals
     public static bool DevModeActive() { return _devMode; }
     public static DevCommandState CurrentCommand() { return _currentCommand; }
-    public static GameObject GetSpawnObject() {  return _spawnObject; }
+    public static GamePieceType GetSpawnType() {  return _spawnType; }
+    public static string GetSpawnName() {  return _spawnName; }
     public static GamePieceType GetDespawnTarget() { return _despawnTarget; }
 
     public static void ExitDevMode()
@@ -72,7 +75,7 @@ public static class DevCommandTracker
         ClearCommandUtils();
         OnCommandStateEntered?.Invoke(_currentCommand);
     }
-    public static void EnterSpawnMode(GameObject prefab)
+    public static void EnterSpawnMode(string name, GamePieceType type)
     {
         if (_currentCommand != DevCommandState.SpawnObject)
         {
@@ -81,7 +84,8 @@ public static class DevCommandTracker
             _currentCommand = DevCommandState.SpawnObject;
         }
 
-        _spawnObject = prefab;
+        _spawnName = name;
+        _spawnType = type;
 
         OnCommandStateEntered?.Invoke(_currentCommand);
     }

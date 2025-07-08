@@ -38,7 +38,7 @@ public class VisualizeDevCommand : MonoBehaviour
                 break;
 
             case DevCommandState.SpawnObject:
-                _cmdText.text = $"Spawn {DevCommandTracker.GetSpawnObject().name}";
+                _cmdText.text = $"Spawn {DevCommandTracker.GetSpawnName()} ({DevCommandTracker.GetSpawnType()})";
                 ShowAllIndicators();
                 break;
 

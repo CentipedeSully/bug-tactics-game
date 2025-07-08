@@ -7,7 +7,7 @@ namespace SullysToolkit.TableTop
 {
     public enum GameBoardLayer
     {
-        Undefined,
+        Unset,
         Units,
         PointsOfInterest,
         Terrain
@@ -22,6 +22,12 @@ namespace SullysToolkit.TableTop
         [SerializeField] [Min(.1f)] private float _cellSize = .1f;
         [SerializeField] private List<GamePiece> _gamePiecesInPlay;
         private GridSystem<bool> _boardGrid;
+        [SerializeField] private Transform _unitContainer;
+        [SerializeField] private Transform _poiContainer;
+        [SerializeField] private Transform _terrainContainer;
+
+        [Tooltip("This spawns gamePieces and holds despawned game pieces. Very Important")]
+        [SerializeField] private BagOfHolding _bagOfHolding;
 
         [Header("TurnSystem Settings")]
         [SerializeField] private TurnSystem _turnSystem;
@@ -57,7 +63,26 @@ namespace SullysToolkit.TableTop
 
         private void SetGamePieceAsChild(GamePiece gamePiece)
         {
-            gamePiece.transform.SetParent(this.transform);
+            switch (gamePiece.GamePieceType())
+            {
+                case GamePieceType.Unit:
+                    gamePiece.transform.SetParent(_unitContainer);
+                    break;
+
+                case GamePieceType.PointOfInterest:
+                    gamePiece.transform.SetParent(_poiContainer);
+                    break;
+
+                case GamePieceType.Terrain:
+                    gamePiece.transform.SetParent(_terrainContainer);
+                    break;
+
+
+                default:
+                    gamePiece.transform.SetParent(this.transform);
+                    break;
+            }
+            
         }
 
         private void SubscribePieceToTurnSystem(GamePiece gamePiece)
@@ -115,7 +140,7 @@ namespace SullysToolkit.TableTop
             LogStatement($"Fetching all active gamePieces in layer {layer}...");
             List<GamePiece> specifiedGamePiecesList =
                 (from gamePiece in _gamePiecesInPlay
-                where gamePiece.GetBoardLayer() == layer
+                where gamePiece.BoardLayer() == layer
                 select gamePiece).ToList();
 
             LogStatement($"Game Pieces of layer {layer} found: {specifiedGamePiecesList.Count}");
@@ -127,51 +152,50 @@ namespace SullysToolkit.TableTop
             LogStatement($"Fetching all actve gamePieces on position {xyPosition.Item1},{xyPosition.Item2}...");
             List<GamePiece> querydPieces =
                 (from gamePiece in _gamePiecesInPlay
-                 where gamePiece.GetGridPosition() == xyPosition
+                 where gamePiece.GridPosition() == xyPosition
                  select gamePiece).ToList();
 
             LogStatement($"GamePieces at position {xyPosition.Item1},{xyPosition.Item2} found: {querydPieces.Count}");
             return querydPieces;
         }
 
-        public void AddGamePiece(GamePiece newGamePiece, GameBoardLayer deseiredLayer, (int, int) xyDesiredPosition)
+        public bool AddPieceToBoardState(GamePiece newGamePiece, GameBoardLayer desiredLayer, (int, int) xyDesiredPosition)
         {
-            LogStatement($"Checking if adding {newGamePiece.gameObject.name} to position ({xyDesiredPosition.Item1},{xyDesiredPosition.Item2}) is a valid");
+            //LogStatement($"Checking if adding {newGamePiece.gameObject.name} to position ({xyDesiredPosition.Item1},{xyDesiredPosition.Item2}) is a valid");
+
             bool _doesPositionExistOnBoard = _boardGrid.IsCellInGrid(xyDesiredPosition.Item1, xyDesiredPosition.Item2);
             bool _doesPieceAlreadyExistOnBoard = DoesGamePieceExistOnBoard(newGamePiece);
-            bool _isPositionAlreadyOccupiedOnLayer = IsPositionOccupied(xyDesiredPosition, deseiredLayer);
+            bool _isPositionAlreadyOccupiedOnLayer = IsPositionOccupied(xyDesiredPosition, desiredLayer);
 
             if (!_doesPieceAlreadyExistOnBoard && !_isPositionAlreadyOccupiedOnLayer && _doesPositionExistOnBoard)
             {
                 LogStatement($"Attempting to Add {newGamePiece.gameObject.name} to gameBoard...");
                 SetGamePieceAsChild(newGamePiece);
-                newGamePiece.SetGameBoard(this);
-                newGamePiece.SetBoardLayer(deseiredLayer);
-                newGamePiece.MoveIntoPlay(xyDesiredPosition);
                 SubscribePieceToTurnSystem(newGamePiece);
 
-                if (newGamePiece.gameObject.activeSelf == false)
-                    newGamePiece.gameObject.SetActive(true);
-
                 _gamePiecesInPlay.Add(newGamePiece);
+                return true;
                 
             }
             else
                 LogStatement($"Cannot add {newGamePiece.gameObject.name} to position ({xyDesiredPosition.Item1},{xyDesiredPosition.Item2})");
+
+            return false;
         }
 
-        public void RemoveGamePieceFromBoard(GamePiece gamePiece)
+        public bool RemovePieceFromBoardState(GamePiece gamePiece)
         {
             LogStatement($"Attempting Removal of {gamePiece.gameObject.name}...");
             if (_gamePiecesInPlay.Contains(gamePiece))
             {
                 _gamePiecesInPlay.Remove(gamePiece);
-                gamePiece.RemoveFromPlay();
                 UnsubscribePieceFromTurnSystem(gamePiece);
                 LogStatement($"{ gamePiece.gameObject.name} removal successful");
+                return true;
             }
             else
                 LogStatement($"{gamePiece.gameObject.name} not found on Gameboard");
+            return false;
         }
 
         public bool IsPositionOccupied((int,int) xyPosition, GameBoardLayer layer)
@@ -181,7 +205,7 @@ namespace SullysToolkit.TableTop
 
             var occupancyQuery =
                 from gamePiece in possiblePieces
-                where gamePiece.GetGridPosition() == xyPosition
+                where gamePiece.GridPosition() == xyPosition
                 select gamePiece;
 
             LogStatement($"Occupancies found: {occupancyQuery.Count()}");
