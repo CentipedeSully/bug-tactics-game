@@ -104,7 +104,6 @@ namespace SullysToolkit.TableTop
         private void ClearBoardData()
         {
             _isInPlay = false;
-            _gameBoard = null;
             _boardLayer = GameBoardLayer.Unset;
             _currentGridPosition = (-1, -1);
         }

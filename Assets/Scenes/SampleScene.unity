@@ -7002,7 +7002,7 @@ MonoBehaviour:
   _unitContainer: {fileID: 1682079118}
   _poiContainer: {fileID: 181221039}
   _terrainContainer: {fileID: 613772052}
-  _bagOfHolding: {fileID: 0}
+  _bagOfHolding: {fileID: 623513522174437604}
   _turnSystem: {fileID: 6148973942127532608}
   _isDebugActive: 0
 --- !u!114 &1833206946255716569
@@ -7018,6 +7018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _board: {fileID: 1833206946255716568}
+  _bagOfHolding: {fileID: 623513522174437604}
   _desiredTerrainStart: Plains
 --- !u!114 &1833206946255716570
 MonoBehaviour:
@@ -7060,6 +7061,7 @@ MonoBehaviour:
   _inputReader: {fileID: 1921678896}
   _turnSystem: {fileID: 6148973942127532608}
   _gameBoard: {fileID: 1833206946255716568}
+  _bagOfHolding: {fileID: 623513522174437604}
   _mouseToWorldTrackerRef: {fileID: 7452918973978003480}
   _isDebugActive: 1
 --- !u!114 &3128322384351061602

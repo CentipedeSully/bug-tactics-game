@@ -34,6 +34,7 @@ namespace SullysToolkit.TableTop.RPG
         [SerializeField] private ReadInput _inputReader;
         [SerializeField] private TurnSystem _turnSystem;
         [SerializeField] private GameBoard _gameBoard;
+        [SerializeField] private BagOfHolding _bagOfHolding;
         [SerializeField] private MouseToWorld2D _mouseToWorldTrackerRef;
 
         [Header("Debugging Utils")]
@@ -86,7 +87,38 @@ namespace SullysToolkit.TableTop.RPG
                     //Perform the current DevCommand if any is active
                     if (IsDevCommandLoaded())
                     {
-                        Debug.Log($"'{DevCommandTracker.CurrentCommand()}' executed (pretend it executed)");
+                        switch (DevCommandTracker.CurrentCommand())
+                        {
+                            //attempt to spawn the current dev selection
+                            case DevCommandState.SpawnObject:
+                                _bagOfHolding.SpawnGamePiece(DevCommandTracker.GetSpawnName(), DevCommandTracker.GetSpawnType(), xySelectedPosition);
+                                break;
+
+                            //attempt to despawn the current dev selection
+                            case DevCommandState.DespawnObject:
+
+                                CaptureSelectionViaMousePosition();
+
+                                switch (DevCommandTracker.GetDespawnTarget())
+                                {
+                                    case GamePieceType.Terrain:
+                                        if (_terrainOnCastPosition != null)
+                                            _terrainOnCastPosition.Despawn();
+                                        break;
+
+                                    case GamePieceType.PointOfInterest:
+                                        if (_poiOnCastPosition != null)
+                                            _poiOnCastPosition.Despawn();
+                                        break;
+
+                                    case GamePieceType.Unit:
+                                        if (_unitOnCastPosition != null)
+                                            _unitOnCastPosition.Despawn();
+                                        break;
+
+                                }
+                                break;
+                        }
                         return;
                     }
 
