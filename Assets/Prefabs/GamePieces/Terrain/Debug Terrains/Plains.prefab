@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4786774201393503376, guid: 05fbc1e8d542e374fac85ebb2124708f, type: 3}
+      propertyPath: _gameBoard
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5683429020700787174, guid: 05fbc1e8d542e374fac85ebb2124708f, type: 3}
       propertyPath: m_Name
       value: Plains

@@ -136,6 +136,7 @@ namespace SullysToolkit.TableTop
         {
             if (bagOfHolding != null && board != null)
             {
+                _bagOfHolding = bagOfHolding;
                 _bagTransform = bagOfHolding.transform; //used to despawn
                 _gameBoard = board; //used to spawn
 

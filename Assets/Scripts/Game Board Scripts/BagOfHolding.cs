@@ -27,9 +27,9 @@ public class BagOfHolding : MonoBehaviour
     [SerializeField] private GpCreator _gpCreator;
     [Tooltip("How many new pieces should be stocked if the bag runs out of a requested gamePiece")]
     [SerializeField] private int _restockAmount = 3;
-    private Dictionary<string, List<GameObject>> _inactiveTerrains;
-    private Dictionary<string, List<GameObject>> _inactivePois;
-    private Dictionary<string, List<GameObject>> _inactiveUnits;
+    private Dictionary<string, List<GameObject>> _inactiveTerrains = new();
+    private Dictionary<string, List<GameObject>> _inactivePois = new();
+    private Dictionary<string, List<GameObject>> _inactiveUnits = new();
 
 
 
@@ -91,12 +91,44 @@ public class BagOfHolding : MonoBehaviour
 
     private void Restock(string name, GamePieceType type)
     {
+        switch (type)
+        {
+            case GamePieceType.Terrain:
+                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveTerrains[name].Count}");
+                break;
+
+            case GamePieceType.PointOfInterest:
+                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactivePois[name].Count}");
+                break;
+
+            case GamePieceType.Unit:
+                Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveUnits[name].Count}");
+                break;
+        }
+
         int stock = 0;
         while (stock < _restockAmount)
         {
             _gpCreator.CreateNewGamePiece(name, type);
             stock++;
+            Debug.Log($"Stock Successful");
         }
+
+        switch (type)
+        {
+            case GamePieceType.Terrain:
+                Debug.Log($"New Stock Level: {_inactiveTerrains[name].Count}");
+                break;
+
+            case GamePieceType.PointOfInterest:
+                Debug.Log($"New Stock Level: {_inactivePois[name].Count}");
+                break;
+
+            case GamePieceType.Unit:
+                Debug.Log($"New Stock Level: {_inactiveUnits[name].Count}");
+                break;
+        }
+
     }
     
 
@@ -108,11 +140,11 @@ public class BagOfHolding : MonoBehaviour
     {
         if (removedGamePiece != null)
         {
-            Debug.Log("Before Storage  vvvvvvvvvvvvvvvvvvvvvv ");
-            LogContents();
+            //Debug.Log("Before Storage  vvvvvvvvvvvvvvvvvvvvvv ");
+            //LogContents();
 
-            string pieceName = gameObject.name;
-            GamePieceType type= gameObject.GetComponent<GamePiece>().GamePieceType();
+            string pieceName = removedGamePiece.name;
+            GamePieceType type= removedGamePiece.GetComponent<GamePiece>().GamePieceType();
 
             //check if the gamePiece is valid
             if (type == GamePieceType.Unset)
@@ -161,7 +193,7 @@ public class BagOfHolding : MonoBehaviour
 
             }
 
-            Debug.Log("After Storage ^^^^^^^^^^^^^^^^^^^^^^^ ");
+            Debug.Log($"Stored {pieceName} in BagOfHolding");
             LogContents();
         }
     }
@@ -172,6 +204,7 @@ public class BagOfHolding : MonoBehaviour
         if (!IsSpawnRequestValid(name, type, position))
             return;
 
+        Debug.Log($"Spawn Requested: {type} '{name}'");
         GameObject pieceObject = null;
 
         //Check the appropriate collection
@@ -257,7 +290,7 @@ public class BagOfHolding : MonoBehaviour
 
         }
 
-        
+        Debug.Log($"Spawn Fulfillment Over for {type} '{name}'");
     }
 
     public GameBoard GameBoard() { return _board; }

@@ -8,6 +8,7 @@ public class DebugBoardInitializer : MonoBehaviour
 {
     //Declarations
     [SerializeField] private GameBoard _board;
+    [SerializeField] private BagOfHolding _bagOfHolding;
     [SerializeField] private string _desiredTerrainStart;
 
 
@@ -33,6 +34,7 @@ public class DebugBoardInitializer : MonoBehaviour
                 for (int j = 0; j < rows; j++)
                 {
                     //spawn a terrain at (i,j) position
+                    _bagOfHolding.SpawnGamePiece(_desiredTerrainStart, GamePieceType.Terrain, (i, j));
                 }
             }
         }

@@ -83,8 +83,11 @@ public class GpCreator : MonoBehaviour
         if (prefab != null)
         {
             //Create and Init the piece
-            GameObject newGpObject = (prefab);
+            GameObject newGpObject = Instantiate(prefab);
+            newGpObject.name = prefabName; //Make sure the Instance isn't suffixed with "Clone"
             newGpObject.GetComponent<GamePiece>().InitializeGamePiece(_bagOfHolding,_bagOfHolding.GameBoard());
+            
+            return;
         }
 
         Debug.Log($"Failed to fetch the prefab '{prefabName}' of type {type}");
