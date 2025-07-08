@@ -29,7 +29,7 @@ public class DespawnOnHealthZero : MonoBehaviour
 
     private void DespawnOnKO()
     {
-        Debug.Log($"Despawning gamePiece: {_gamePiece.GamePieceType()} '{gameObject.name}'");
+        //Debug.Log($"Despawning gamePiece: {_gamePiece.GamePieceType()} '{gameObject.name}'");
         _gamePiece.Despawn();
     }
 }

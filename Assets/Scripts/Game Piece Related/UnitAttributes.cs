@@ -51,13 +51,13 @@ public class UnitAttributes : MonoBehaviour
     {
         
         _currentHp -= value;
-        Debug.Log($"{gameObject.name} took {value} damage");
+        //Debug.Log($"{gameObject.name} took {value} damage");
         OnDamageTaken?.Invoke( value );
 
 
         if (_currentHp <= 0)
         {
-            Debug.Log($"{gameObject.name}'s health reached zero");
+            //Debug.Log($"{gameObject.name}'s health reached zero");
             OnHealthZero?.Invoke();
         }
     }

@@ -1207,7 +1207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2256495360006926922, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: m_text
-      value: Grub
+      value: Grub*
       objectReference: {fileID: 0}
     - target: {fileID: 3578200826001505313, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: _name
@@ -1736,7 +1736,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2256495360006926922, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: m_text
-      value: Plains
+      value: Plains*
       objectReference: {fileID: 0}
     - target: {fileID: 3578200826001505313, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: _name
@@ -3006,7 +3006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2256495360006926922, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: m_text
-      value: Tuber Field
+      value: Tuber Field*
       objectReference: {fileID: 0}
     - target: {fileID: 3578200826001505313, guid: e9bc5dbeb169d524c99d9863433880ab, type: 3}
       propertyPath: _name
