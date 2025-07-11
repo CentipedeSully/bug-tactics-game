@@ -53,7 +53,7 @@ public class UnitAttributes : MonoBehaviour
         _currentHp -= value;
         //Debug.Log($"{gameObject.name} took {value} damage");
         OnDamageTaken?.Invoke( value );
-
+        UiNotificationHelper.ShowDamageNotification(value, transform);
 
         if (_currentHp <= 0)
         {

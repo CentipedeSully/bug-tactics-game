@@ -1803,6 +1803,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10732a9f092491043845b147a0349e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainCam: {fileID: 519420031}
   _devModeEnabled: 1
   _isDevModeActive: 0
   _devUi: {fileID: 217805953}
@@ -2777,6 +2778,57 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1094729885}
   m_SourcePrefab: {fileID: 100100000, guid: f6b7f2cab527e334296142e4736f07b7, type: 3}
+--- !u!1 &1360305303
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1360305304}
+  - component: {fileID: 1360305305}
+  m_Layer: 5
+  m_Name: Ui Notifier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1360305304
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360305303}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7367743776559958356}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1360305305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360305303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b5a57006017794db93d1dc93f69cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 0.25, z: 0}
+  _batchCreationSize: 5
+  _damageNotifPrefab: {fileID: 4274532479730797913, guid: b1b3229bf83bbd64aa8d50654e2dbe66, type: 3}
 --- !u!1 &1384659852 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1608756249066902226, guid: f6b7f2cab527e334296142e4736f07b7, type: 3}
@@ -4534,6 +4586,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 217805954}
+  - {fileID: 1360305304}
   m_Father: {fileID: 6386360048970475534}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

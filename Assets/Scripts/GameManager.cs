@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     //Declarations
+    [SerializeField] private Camera _mainCam;
     [SerializeField] private bool _devModeEnabled = true;
     [SerializeField] private bool _isDevModeActive = false;
     [SerializeField] private GameObject _devUi;
@@ -13,6 +14,11 @@ public class GameManager : MonoBehaviour
 
 
     //monobehaviours
+    private void Awake()
+    {
+        WorldToScreenCalculator.SetCamera(_mainCam);
+    }
+
     private void OnEnable()
     {
         if (_devModeEnabled)
