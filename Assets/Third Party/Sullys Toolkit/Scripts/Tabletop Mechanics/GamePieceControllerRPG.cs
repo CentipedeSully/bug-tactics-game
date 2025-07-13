@@ -36,6 +36,8 @@ namespace SullysToolkit.TableTop.RPG
         [SerializeField] private GameBoard _gameBoard;
         [SerializeField] private BagOfHolding _bagOfHolding;
         [SerializeField] private MouseToWorld2D _mouseToWorldTrackerRef;
+        [SerializeField] private GameObject _hoverIndicator;
+        [SerializeField] private IndicatorManager _indicatorManager;
 
         [Header("Debugging Utils")]
         [SerializeField] private bool _isDebugActive = false;
@@ -46,7 +48,10 @@ namespace SullysToolkit.TableTop.RPG
 
 
         //Monobehaviours
-
+        private void Awake()
+        {
+            SelectionKeeper.SetIndicatorManager(_indicatorManager);
+        }
         private void Update()
         {
             UpdateHoverPosition();
@@ -69,6 +74,14 @@ namespace SullysToolkit.TableTop.RPG
                 _hoveredPositionX = -1;
                 _hoveredPositionY = -1;
             }
+
+            if (_hoveredPositionX != -1 && _hoveredPositionY != -1)
+            {
+                _hoverIndicator.transform.position = _gameBoard.GetGrid().GetPositionFromCell(_hoveredPositionX, _hoveredPositionY);
+                _hoverIndicator.SetActive(true);
+            }
+            else
+                _hoverIndicator.SetActive(false);
         }
 
         private void ListenForInputCommands()
@@ -79,11 +92,14 @@ namespace SullysToolkit.TableTop.RPG
             //Capture all game Pieces on the mouse's position
             if (_inputReader.LeftClick() && _isCasterReady)
             {
-                CooldownCaster();
+                
                 (int, int) xySelectedPosition = _gameBoard.GetGrid().GetCellFromPosition(_mouseToWorldTrackerRef.GetWorldPosition());
 
                 if (xySelectedPosition != (-1, -1))
                 {
+                    CooldownCaster();
+
+
                     //Perform the current DevCommand if any is active
                     if (IsDevCommandLoaded())
                     {
@@ -91,8 +107,19 @@ namespace SullysToolkit.TableTop.RPG
                         return;
                     }
 
+                    //Capture all pieces on the cell
                     CaptureSelectionViaMousePosition();
-                    //Debug.Log($"Captured Pieces: \n{_unitOnCastPosition}\n{_poiOnCastPosition}\n{_terrainOnCastPosition}");
+
+                    //Pick the gamePiece type that's the highest ptiority
+                    GamePiece priorityPiece = GetHighestPrioritySelection();
+
+                    //Set the captured piece as the new selection
+                    if (priorityPiece != null)
+                        SelectionKeeper.SetSelection(priorityPiece.gameObject,xySelectedPosition);
+                    else SelectionKeeper.SetSelection(null, xySelectedPosition);
+
+                    //Visualize where we just clicked on the board
+                    _indicatorManager.PlaceClickIndicator(xySelectedPosition);
                 }
 
             }
@@ -106,8 +133,13 @@ namespace SullysToolkit.TableTop.RPG
                 //Clear the current dev command, if any is active
                 if (IsDevCommandLoaded())
                     DevCommandTracker.ClearCurrentCommand();
+
+                //Clear the current selection, if one exists
+                if (SelectionKeeper.Selection() != null)
+                    SelectionKeeper.ClearSelection();
             }
         }
+
 
 
 
@@ -124,7 +156,7 @@ namespace SullysToolkit.TableTop.RPG
 
         private GamePiece GetHighestPrioritySelection()
         {
-            STKDebugLogger.LogStatement(_isDebugActive, $"Determining the non-null selection of highest priority...");
+            //STKDebugLogger.LogStatement(_isDebugActive, $"Determining the non-null selection of highest priority...");
             for (int i = 0; i < _displayPriorityList.Count; i++)
             {
 
@@ -138,7 +170,7 @@ namespace SullysToolkit.TableTop.RPG
                     return _terrainOnCastPosition;
             }
 
-            STKDebugLogger.LogStatement(_isDebugActive, $"No Selection exists. Returning null");
+            //STKDebugLogger.LogStatement(_isDebugActive, $"No Selection exists. Returning null");
             return null;
         }
 

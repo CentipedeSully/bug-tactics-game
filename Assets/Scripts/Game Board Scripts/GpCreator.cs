@@ -16,14 +16,9 @@ public class GpCreator : MonoBehaviour
 
 
     //monobehaviours
-    private void OnEnable()
+    private void Awake()
     {
-        GpCreationHelper.OnCreationRequested += CreateNewGamePiece;
-    }
-
-    private void OnDisable()
-    {
-        GpCreationHelper.OnCreationRequested -= CreateNewGamePiece;
+        GpCreationHelper.SetCreator(this);
     }
 
 

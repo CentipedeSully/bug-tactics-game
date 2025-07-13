@@ -1,5 +1,5 @@
 {
-    "name": "New Controls",
+    "name": "Player Controls",
     "maps": [
         {
             "name": "Core Controls",
@@ -16,21 +16,21 @@
                 },
                 {
                     "name": "LClick",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "6df4306b-3cd7-4dc1-b4d8-44774b08f6b3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "RClick",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "5795063e-500b-4cb2-af8e-c863d6598628",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [

@@ -3,17 +3,16 @@ using UnityEngine;
 
 public static class GpCreationHelper
 {
-
-    public delegate void GpCreationHelperEvent(string name, GamePieceType type);
-    public static event GpCreationHelperEvent OnCreationRequested;
-
-    
+    public static GpCreator _creator;
 
 
+
+
+    public static void SetCreator(GpCreator creator) {  _creator = creator; }
     public static void RequestGpCreation(string name, GamePieceType type)
     {
         if (type != GamePieceType.Unset)
-            OnCreationRequested?.Invoke(name, type);
+            _creator.CreateNewGamePiece(name, type);
 
         else Debug.LogWarning($"Ignoring the creation request of gamePiece {name} of unset type");
     }

@@ -51,6 +51,9 @@ TagManager:
   - name: Units
     uniqueID: 3726089557
     locked: 0
+  - name: Tile Indicators
+    uniqueID: 854183407
+    locked: 0
   - name: Notifications
     uniqueID: 967713031
     locked: 0
