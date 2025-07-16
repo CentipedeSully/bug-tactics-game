@@ -25,7 +25,7 @@ public class GamePieceDisplayer : MonoBehaviour
 
         TerrainAttributes attributes = piece.GetComponent<TerrainAttributes>();
 
-        _terrainDisplayController.ShowTerrainDisplay(attributes.Name(), attributes.Description(), attributes.FoodOutputPerTurn(), attributes.WorkOutputPerTurn()); 
+        _terrainDisplayController.ShowTerrainDisplay(attributes.TerrainName(), attributes.Description(), attributes.FoodOutputPerTurn(), attributes.WorkOutputPerTurn()); 
     }
 
     public void HideDisplays()

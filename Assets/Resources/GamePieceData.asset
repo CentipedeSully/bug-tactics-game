@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f35c25fee50f3749a3bcd6ed88af153, type: 3}
   m_Name: GamePieceData
   m_EditorClassIdentifier: 
-  _units:
-  - {fileID: 994538509209373307, guid: 15469878504b91742a254734db8bbb3f, type: 3}
-  _pointsOfInterest:
-  - {fileID: 3191740774412475360, guid: 6f0a4e305a3aa0c45a5651121c094fc8, type: 3}
-  _terrains:
-  - {fileID: 471119773827865321, guid: c0edddab065207342adb3a404945da19, type: 3}
+  _unitGroupPrefab: {fileID: 2428427618027808345, guid: 0870eba3ff69e7f4a9baea10d9679a5a, type: 3}
+  _poiGroupPrefab: {fileID: 872748707243126506, guid: 54dc7566a978e2b4fa0ad509ddca9fbc, type: 3}
+  _blankTerrainPrefab: {fileID: 8365232448424528454, guid: 679f27d090f07d945a2a01e95456eb34, type: 3}

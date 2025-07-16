@@ -9,7 +9,7 @@ namespace SullysToolkit.TableTop
         Unset,
         Terrain,
         PointOfInterest,
-        Unit
+        UnitGroup
     }
 
     public class GamePiece : MonoBehaviour

@@ -160,7 +160,7 @@ namespace SullysToolkit.TableTop.RPG
             for (int i = 0; i < _displayPriorityList.Count; i++)
             {
 
-                if (_displayPriorityList[i] == GamePieceType.Unit && _unitOnCastPosition != null)
+                if (_displayPriorityList[i] == GamePieceType.UnitGroup && _unitOnCastPosition != null)
                     return _unitOnCastPosition;
 
                 else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnCastPosition != null)
@@ -200,7 +200,7 @@ namespace SullysToolkit.TableTop.RPG
 
             IEnumerable<GamePiece> unitQuery =
                 from piece in allPiecesOnPosition
-                where piece.GamePieceType() == GamePieceType.Unit
+                where piece.GamePieceType() == GamePieceType.UnitGroup
                 select piece;
 
             if (unitQuery.Any())
@@ -304,7 +304,7 @@ namespace SullysToolkit.TableTop.RPG
                                 _poiOnCastPosition.Despawn();
                             break;
 
-                        case GamePieceType.Unit:
+                        case GamePieceType.UnitGroup:
                             if (_unitOnCastPosition != null)
                                 _unitOnCastPosition.Despawn();
                             break;

@@ -7,9 +7,9 @@ using UnityEngine;
 public class GamePieceData : ScriptableObject
 {
     //Declarations
-    [SerializeField] private List<GameObject> _units= new List<GameObject>();
-    [SerializeField] private List<GameObject> _pointsOfInterest= new List<GameObject>();
-    [SerializeField] private List<GameObject> _terrains= new List<GameObject>();
+    [SerializeField] private GameObject _unitGroupPrefab;
+    [SerializeField] private GameObject _poiGroupPrefab;
+    [SerializeField] private GameObject _blankTerrainPrefab;
 
 
 
@@ -28,38 +28,9 @@ public class GamePieceData : ScriptableObject
 
 
     //Externals
-    public GameObject GetUnit(string name)
-    {
-        foreach (GameObject unit in _units)
-        {
-            if (unit.name == name)
-                return unit;
-        }
-
-        return null;
-    }
-
-    public GameObject GetPointOfInterest(string name)
-    {
-        foreach (GameObject site in _pointsOfInterest)
-        {
-            if (site.name == name)
-                return site;
-        }
-
-        return null;
-    }
-
-    public GameObject GetTerrain(string name)
-    {
-        foreach (GameObject terrain in _terrains)
-        {
-            if (terrain.name == name)
-                return terrain;
-        }
-
-        return null;
-    }
+    public GameObject GetTerrainPrefab() { return _blankTerrainPrefab; }
+    public GameObject GetPoiListPrefab() { return _poiGroupPrefab; }
+    public GameObject GetUnitGroupPrefab() { return _unitGroupPrefab; }
 
 
 }

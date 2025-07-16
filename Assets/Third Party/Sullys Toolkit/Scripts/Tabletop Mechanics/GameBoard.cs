@@ -65,7 +65,7 @@ namespace SullysToolkit.TableTop
         {
             switch (gamePiece.GamePieceType())
             {
-                case GamePieceType.Unit:
+                case GamePieceType.UnitGroup:
                     gamePiece.transform.SetParent(_unitContainer);
                     break;
 
