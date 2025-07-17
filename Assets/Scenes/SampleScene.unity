@@ -223,6 +223,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f0935feef104c348a163a31c347a15a, type: 3}
+--- !u!1 &84807935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 84807936}
+  m_Layer: 0
+  m_Name: TuberFields
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &84807936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84807935}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1151528880}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &130911556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3501,6 +3532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1151528880}
   - component: {fileID: 1151528881}
+  - component: {fileID: 1151528882}
   m_Layer: 0
   m_Name: Poi pooler
   m_TagString: Untagged
@@ -3520,7 +3552,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 84807936}
   m_Father: {fileID: 844200116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1151528881
@@ -3535,6 +3568,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25d71e93c943c3e40a78ca20e87f5b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _restockSize: 3
+  _tuberFieldContainer: {fileID: 84807936}
+  _board: {fileID: 1833206946255716568}
+  _bagOfHolding: {fileID: 623513522174437604}
+--- !u!114 &1151528882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151528879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fe818af188eb674d8b9a6904bec1e2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pooler: {fileID: 1151528881}
+  _data: {fileID: 11400000, guid: b0f6567db7ff5b34182d7bd7779d3a0f, type: 2}
 --- !u!1001 &1157246794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3771,6 +3822,8 @@ MonoBehaviour:
   _restockSize: 3
   _humanContainer: {fileID: 436976974}
   _grubContainer: {fileID: 1138448470}
+  _board: {fileID: 1833206946255716568}
+  _bagOfHolding: {fileID: 623513522174437604}
 --- !u!1 &1225437017
 GameObject:
   m_ObjectHideFlags: 0
@@ -3807,6 +3860,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 65}
   m_SizeDelta: {x: 200, y: 20}
   m_Pivot: {x: 1, y: 0}
+--- !u!1 &1245551552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1245551553}
+  m_Layer: 0
+  m_Name: Unit GPs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1245551553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245551552}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 623513522174437603}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1360305303
 GameObject:
   m_ObjectHideFlags: 0
@@ -4692,6 +4776,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1727538174}
   m_CullTransparentMesh: 1
+--- !u!1 &1770551183
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1770551184}
+  m_Layer: 0
+  m_Name: Terrain GPs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1770551184
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770551183}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 623513522174437603}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1782695146 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1335644192423674950, guid: 6f7048788d9f0614c96941b5bf32da1f, type: 3}
@@ -5467,6 +5582,37 @@ MonoBehaviour:
   _indicators:
   - {fileID: 795607216}
   - {fileID: 1601936232}
+--- !u!1 &2043333169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2043333170}
+  m_Layer: 0
+  m_Name: Poi GPs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2043333170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043333169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 623513522174437603}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2077349186
 GameObject:
   m_ObjectHideFlags: 0
@@ -5823,7 +5969,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1245551553}
+  - {fileID: 1770551184}
+  - {fileID: 2043333170}
   m_Father: {fileID: 623513522286584272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &623513522174437604
@@ -5839,8 +5988,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _board: {fileID: 1833206946255716568}
-  _gpCreator: {fileID: 1833206946255716570}
   _restockAmount: 3
+  _unitGpContainer: {fileID: 1245551553}
+  _poiGpContainer: {fileID: 2043333170}
+  _terrainGpContainer: {fileID: 1770551184}
 --- !u!4 &623513522286584272
 Transform:
   m_ObjectHideFlags: 0

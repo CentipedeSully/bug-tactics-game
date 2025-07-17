@@ -3,15 +3,16 @@ using UnityEngine;
 
 public static class GpCreationHelper
 {
-    public static GpCreator _creator;
-
+    private static GpCreator _creator;
+    private static BagOfHolding _bagOfHolding;
 
 
 
     public static void SetCreator(GpCreator creator) {  _creator = creator; }
-    public static void CreateGamePiece(GamePieceType pieceType, (int,int) position)
+    public static void SetBagOfHolding(BagOfHolding bag) {  _bagOfHolding = bag; }
+    public static void CreateGamePiece(GamePieceType pieceType)
     {
-        //_creator.CreateNewGamePiece()
+        _creator.CreateNewGamePiece(pieceType);
     }
 
 }

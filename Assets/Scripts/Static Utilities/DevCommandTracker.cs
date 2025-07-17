@@ -17,8 +17,10 @@ public static class DevCommandTracker
     //Declarations
     private static bool _devMode = true;
     private static DevCommandState _currentCommand;
-    private static string _specifiedName;
-    private static GamePieceType _specifiedType;
+    private static UnitPrefabName _unitPrefabName;
+    private static PoiPrefabName _poiPrefabName;
+    private static TerrainPrefabName _terrainPrefabName;
+    private static GamePieceType _gamePieceType;
     private static int _specifiedValue;
 
     public delegate void DevModeEvent();
@@ -35,8 +37,10 @@ public static class DevCommandTracker
     private static void ClearCommandUtils()
     {
         _currentCommand = DevCommandState.unset;
-        _specifiedName = "";
-        _specifiedType = GamePieceType.Unset;
+        _unitPrefabName = UnitPrefabName.unset;
+        _poiPrefabName = PoiPrefabName.unset;
+        _terrainPrefabName = TerrainPrefabName.unset;
+        _gamePieceType = GamePieceType.Unset;
         _specifiedValue = 0;
     }
 
@@ -45,8 +49,10 @@ public static class DevCommandTracker
     //Externals
     public static bool DevModeActive() { return _devMode; }
     public static DevCommandState CurrentCommand() { return _currentCommand; }
-    public static GamePieceType GetSpecifiedType() {  return _specifiedType; }
-    public static string GetSpecifiedName() {  return _specifiedName; }
+    public static GamePieceType GetGamePieceType() {  return _gamePieceType; }
+    public static UnitPrefabName GetSpecifiedUnitPrefab() {  return _unitPrefabName; }
+    public static PoiPrefabName GetSpecifiedPoiPrefab() {  return _poiPrefabName; }
+    public static TerrainPrefabName GetSpecifiedTerrainPrefab() {  return _terrainPrefabName; }
     public static int GetSpecifiedValue() { return _specifiedValue; }
 
     public static void ExitDevMode()
@@ -76,7 +82,7 @@ public static class DevCommandTracker
         ClearCommandUtils();
         OnCommandStateEntered?.Invoke(_currentCommand);
     }
-    public static void EnterSpawnMode(string name, GamePieceType type)
+    public static void EnterSpawnMode(UnitPrefabName unitPrefab)
     {
         if (_currentCommand != DevCommandState.SpawnObject)
         {
@@ -85,8 +91,33 @@ public static class DevCommandTracker
             _currentCommand = DevCommandState.SpawnObject;
         }
 
-        _specifiedName = name;
-        _specifiedType = type;
+        _unitPrefabName = unitPrefab;
+
+        OnCommandStateEntered?.Invoke(_currentCommand);
+    }
+    public static void EnterSpawnMode(PoiPrefabName poiPrefab)
+    {
+        if (_currentCommand != DevCommandState.SpawnObject)
+        {
+            ClearCommandUtils();
+
+            _currentCommand = DevCommandState.SpawnObject;
+        }
+
+        _poiPrefabName = poiPrefab;
+
+        OnCommandStateEntered?.Invoke(_currentCommand);
+    }
+    public static void EnterSpawnMode(TerrainPrefabName terrainPrefab)
+    {
+        if (_currentCommand != DevCommandState.SpawnObject)
+        {
+            ClearCommandUtils();
+
+            _currentCommand = DevCommandState.SpawnObject;
+        }
+
+        _terrainPrefabName = terrainPrefab;
 
         OnCommandStateEntered?.Invoke(_currentCommand);
     }
@@ -99,7 +130,7 @@ public static class DevCommandTracker
             _currentCommand = DevCommandState.DespawnObject;
         }
 
-        _specifiedType = targetType;
+        _gamePieceType = targetType;
 
         OnCommandStateEntered?.Invoke(_currentCommand);
     }

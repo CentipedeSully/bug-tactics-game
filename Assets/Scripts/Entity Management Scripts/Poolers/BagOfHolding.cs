@@ -24,28 +24,30 @@ public class BagOfHolding : MonoBehaviour
 {
     //Declarations
     [SerializeField] private GameBoard _board;
-    [SerializeField] private GpCreator _gpCreator;
     [Tooltip("How many new pieces should be stocked if the bag runs out of a requested gamePiece")]
     [SerializeField] private int _restockAmount = 3;
-    private Dictionary<string, List<GameObject>> _inactiveTerrains = new();
-    private Dictionary<string, List<GameObject>> _inactivePois = new();
-    private Dictionary<string, List<GameObject>> _inactiveUnits = new();
+    [SerializeField] private Transform _unitGpContainer;
+    [SerializeField] private Transform _poiGpContainer;
+    [SerializeField] private Transform _terrainGpContainer;
 
 
 
     //Monobehaviours
 
-
+    private void Awake()
+    {
+        GpCreationHelper.SetBagOfHolding(this);
+    }
 
 
 
     //Internals
-    private bool IsSpawnRequestValid(string name, GamePieceType type, (int,int) position)
+    private bool IsSpawnRequestValid(GamePieceType type, (int,int) position)
     {
         //Make sure the type is set
         if (type == GamePieceType.Unset)
         {
-            Debug.LogWarning($"Spawn Request for '{name}' Denied. Request provided an UNSET type");
+            Debug.LogWarning($"Spawn Request on {position} Denied. Request provided an UNSET type");
             return false;
         }
 
@@ -55,15 +57,15 @@ public class BagOfHolding : MonoBehaviour
             case GamePieceType.Terrain:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.Terrain))
                 {
-                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Terrain position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request Denied. Terrain position {position} already occupied");
                     return false;
                 }    
                 break;
 
-            case GamePieceType.PointOfInterest:
+            case GamePieceType.PointOfInterestGroup:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.PointsOfInterest))
                 {
-                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Poi position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request Denied. Poi position {position} already occupied");
                     return false;
                 }
                 break;
@@ -71,57 +73,24 @@ public class BagOfHolding : MonoBehaviour
             case GamePieceType.UnitGroup:
                 if (_board.IsPositionOccupied(position, GameBoardLayer.Units))
                 {
-                    Debug.LogWarning($"Spawn Request for '{name}' Denied. Unit position {position} already occupied");
+                    Debug.LogWarning($"Spawn Request Denied. Unit position {position} already occupied");
                     return false;
                 }
                 break;
         }
 
-        //make sure the requested data object exists
-        //...
-
         return true;
 
     }
 
-    private void Restock(string name, GamePieceType type)
+    private void Restock(GamePieceType type)
     {
-        switch (type)
-        {
-            case GamePieceType.Terrain:
-                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveTerrains[name].Count}");
-                break;
-
-            case GamePieceType.PointOfInterest:
-                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactivePois[name].Count}");
-                break;
-
-            case GamePieceType.UnitGroup:
-                //Debug.Log($"Requested Restock of {type} '{name}'. Current Stock: {_inactiveUnits[name].Count}");
-                break;
-        }
 
         int stock = 0;
         while (stock < _restockAmount)
         {
-            _gpCreator.CreateNewGamePiece(type);
+            GpCreationHelper.CreateGamePiece(type);
             stock++;
-            //Debug.Log($"Stock Successful");
-        }
-
-        switch (type)
-        {
-            case GamePieceType.Terrain:
-                //Debug.Log($"New Stock Level: {_inactiveTerrains[name].Count}");
-                break;
-
-            case GamePieceType.PointOfInterest:
-                //Debug.Log($"New Stock Level: {_inactivePois[name].Count}");
-                break;
-
-            case GamePieceType.UnitGroup:
-                //Debug.Log($"New Stock Level: {_inactiveUnits[name].Count}");
-                break;
         }
 
     }
@@ -135,16 +104,12 @@ public class BagOfHolding : MonoBehaviour
     {
         if (removedGamePiece != null)
         {
-            //Debug.Log("Before Storage  vvvvvvvvvvvvvvvvvvvvvv ");
-            //LogContents();
-
-            string pieceName = removedGamePiece.name;
             GamePieceType type= removedGamePiece.GetComponent<GamePiece>().GamePieceType();
 
             //check if the gamePiece is valid
             if (type == GamePieceType.Unset)
             {
-                Debug.LogWarning($"Attempted to store a gamePiece of Unset type ({pieceName})");
+                Debug.LogWarning($"Attempted to store a gamePiece of Unset type (gameObject: {removedGamePiece.name})");
                 return;
             }
 
@@ -152,186 +117,128 @@ public class BagOfHolding : MonoBehaviour
             switch (type)
             {
                 case GamePieceType.Terrain:
-                    if (_inactiveTerrains.ContainsKey(pieceName))
-                        _inactiveTerrains[pieceName].Add(removedGamePiece);
-
-                    else
-                    {
-                        _inactiveTerrains[pieceName] = new List<GameObject>();
-                        _inactiveTerrains[pieceName].Add(removedGamePiece);
-                    }
+                    removedGamePiece.transform.parent = _terrainGpContainer;
                     break;
 
 
-                case GamePieceType.PointOfInterest:
-                    if (_inactivePois.ContainsKey(pieceName))
-                        _inactivePois[pieceName].Add(removedGamePiece);
-
-                    else
-                    {
-                        _inactivePois[pieceName] = new List<GameObject>();
-                        _inactivePois[pieceName].Add(removedGamePiece);
-                    }
+                case GamePieceType.PointOfInterestGroup:
+                    removedGamePiece.transform.parent = _poiGpContainer;
                     break;
 
 
                 case GamePieceType.UnitGroup:
-                    if (_inactiveUnits.ContainsKey(pieceName))
-                        _inactiveUnits[pieceName].Add(removedGamePiece);
-
-                    else
-                    {
-                        _inactiveUnits[pieceName] = new List<GameObject>();
-                        _inactiveUnits[pieceName].Add(removedGamePiece);
-                    }
+                    removedGamePiece.transform.parent = _unitGpContainer;
                     break;
 
             }
 
-            //Debug.Log($"Stored {pieceName} in BagOfHolding");
-            //LogContents();
+            //move the piece to it's container's origin
+            removedGamePiece.transform.localPosition = Vector3.zero;
         }
     }
 
-    public void SpawnGamePiece(string name, GamePieceType type, (int,int) position)
+    public void SpawnGamePiece(GamePieceType type, (int,int) position)
     {
         //ignore the request if it's invalid
-        if (!IsSpawnRequestValid(name, type, position))
+        if (!IsSpawnRequestValid(type, position))
             return;
 
-        //Debug.Log($"Spawn Requested: {type} '{name}'");
         GameObject pieceObject = null;
+        int childCount = 0;
 
         //Check the appropriate collection
         switch (type)
         {
             case GamePieceType.Terrain:
 
-                //Make sure the name exists as a subcategory
-                if (!_inactiveTerrains.ContainsKey(name))
-                    _inactiveTerrains[name] = new List<GameObject>();
+                childCount = _terrainGpContainer.childCount;
 
                 //Restock if we're out
-                if (_inactiveTerrains[name].Count == 0)
-                    Restock(name, GamePieceType.Terrain);
+                if (childCount == 0)
+                {
+                    Restock(GamePieceType.Terrain);
+                    childCount = _terrainGpContainer.childCount;
+                }
+                    
 
                 //halt if we've failed to restock the requested piece
-                if (_inactiveTerrains[name].Count == 0)
+                if (childCount == 0)
                 {
-                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece");
                     return;
                 }
 
-                //remove a copy from the bag
-                int lastTerrainIndex = _inactiveTerrains[name].Count - 1; //pick from the end to reduce reindexing
-                pieceObject = _inactiveTerrains[name][lastTerrainIndex];
-                _inactiveTerrains[name].RemoveAt(lastTerrainIndex);
+                //Select the latest gamePiece to enter the bag
+                pieceObject = _terrainGpContainer.GetChild(childCount -1).gameObject;
 
                 //spawn the removed object
-                pieceObject.GetComponent<GamePiece>().Spawn(GameBoardLayer.Terrain, position);
+                //the Spawn method auto the gamePiece to the gameBoard,
+                //so there's no need to remove the child from the container here
+                pieceObject.GetComponent<GamePiece>().Spawn(GameBoardLayer.Terrain, position); 
                 break;
 
 
-            case GamePieceType.PointOfInterest:
-                //Make sure the name exists as a subcategory
-                if (!_inactivePois.ContainsKey(name))
-                    _inactivePois[name] = new List<GameObject>();
+            case GamePieceType.PointOfInterestGroup:
+
+                childCount = _poiGpContainer.childCount;
 
                 //Restock if we're out
-                if (_inactivePois[name].Count == 0)
-                    Restock(name, GamePieceType.PointOfInterest);
+                if (childCount == 0)
+                {
+                    Restock(GamePieceType.PointOfInterestGroup);
+                    childCount = _poiGpContainer.childCount;
+                }
+
 
                 //halt if we've failed to restock the requested piece
-                if (_inactivePois[name].Count == 0)
+                if (childCount == 0)
                 {
-                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece");
                     return;
                 }
 
-                //remove a copy from the bag
-                int lastPoiIndex = _inactivePois[name].Count - 1; //pick from the end to reduce reindexing
-                pieceObject = _inactivePois[name][lastPoiIndex];
-                _inactivePois[name].RemoveAt(lastPoiIndex);
+                //Select the latest gamePiece to enter the bag
+                pieceObject = _poiGpContainer.GetChild(childCount - 1).gameObject;
 
                 //spawn the removed object
+                //the Spawn method auto the gamePiece to the gameBoard,
+                //so there's no need to remove the child from the container here
                 pieceObject.GetComponent<GamePiece>().Spawn(GameBoardLayer.PointsOfInterest, position);
                 break;
 
 
             case GamePieceType.UnitGroup:
-                //Make sure the name exists as a subcategory
-                if (!_inactiveUnits.ContainsKey(name))
-                    _inactiveUnits[name] = new List<GameObject>();
+
+                childCount = _unitGpContainer.childCount;
 
                 //Restock if we're out
-                if (_inactiveUnits[name].Count == 0)
-                    Restock(name, GamePieceType.UnitGroup);
+                if (childCount == 0)
+                {
+                    Restock(GamePieceType.UnitGroup);
+                    childCount = _unitGpContainer.childCount;
+                }
+
 
                 //halt if we've failed to restock the requested piece
-                if (_inactiveUnits[name].Count == 0)
+                if (childCount == 0)
                 {
-                    Debug.LogWarning($"Failed to Restock {type} gamePiece: '{name}'");
+                    Debug.LogWarning($"Failed to Restock {type} gamePiece");
                     return;
                 }
 
-                //remove a copy from the bag
-                int lastUnitIndex = _inactiveUnits[name].Count - 1; //pick from the end to reduce reindexing
-                pieceObject = _inactiveUnits[name][lastUnitIndex];
-                _inactiveUnits[name].RemoveAt(lastUnitIndex);
+                //Select the latest gamePiece to enter the bag
+                pieceObject = _unitGpContainer.GetChild(childCount - 1).gameObject;
 
                 //spawn the removed object
+                //the Spawn method auto the gamePiece to the gameBoard,
+                //so there's no need to remove the child from the container here
                 pieceObject.GetComponent<GamePiece>().Spawn(GameBoardLayer.Units, position);
                 break;
 
         }
 
-        //Debug.Log($"Spawn Fulfillment Over for {type} '{name}'");
     }
 
     public GameBoard GameBoard() { return _board; }
-
-    public void LogContents()
-    {
-        string log = "Bag of Holding Contents: \n=====================================\n";
-
-        log += "UNIT PIECES:\n";
-
-        if (_inactiveUnits.Count == 0)
-            log += "[None]\n";
-        else
-        {
-            foreach (KeyValuePair<string, List<GameObject>> entry in _inactiveUnits)
-                log += $"{entry.Key}(s): {entry.Value.Count}\n";
-        }
-
-
-
-        log += "------------------------------\nPOINT OF INTEREST PIECES:\n";
-
-        if (_inactivePois.Count == 0)
-            log += "[None]\n";
-        else
-        {
-            foreach (KeyValuePair<string, List<GameObject>> entry in _inactivePois)
-                log += $"{entry.Key}(s): {entry.Value.Count}\n";
-        }
-        
-
-
-        log += "------------------------------\nTERRAIN PIECES:\n";
-        if (_inactiveTerrains.Count == 0)
-            log += "[None]\n";
-        else
-        {
-            foreach (KeyValuePair<string, List<GameObject>> entry in _inactiveTerrains)
-                log += $"{entry.Key}(s): {entry.Value.Count}\n";
-        }
-       
-
-        log += "\n============== CONTENT LOG END ================";
-        Debug.Log(log);
-    }
-
-
 
 }

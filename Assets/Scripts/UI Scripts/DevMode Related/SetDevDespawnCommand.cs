@@ -15,7 +15,7 @@ public class SetDevDespawnCommand : MonoBehaviour
         if (DevCommandTracker.DevModeActive())
         {
             DevCommandTracker.EnterDespawnMode(_targetType);
-            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Target Type: {DevCommandTracker.GetSpecifiedType()}");
+            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Target Type: {DevCommandTracker.GetGamePieceType()}");
         }
             
     }

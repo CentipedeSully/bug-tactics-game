@@ -14,8 +14,8 @@ public class SetDevSpawnCommand : MonoBehaviour
     {
         if (DevCommandTracker.DevModeActive())
         {
-            DevCommandTracker.EnterSpawnMode(_name,_type);
-            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Name: {DevCommandTracker.GetSpecifiedName()},{DevCommandTracker.GetSpecifiedType()}");
+            //DevCommandTracker.EnterSpawnMode(_name,_type);
+            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Name: {DevCommandTracker.GetSpecifiedUnitPrefab()},{DevCommandTracker.GetGamePieceType()}");
         }
             
     }

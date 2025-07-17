@@ -8,7 +8,7 @@ namespace SullysToolkit.TableTop
     {
         Unset,
         Terrain,
-        PointOfInterest,
+        PointOfInterestGroup,
         UnitGroup
     }
 

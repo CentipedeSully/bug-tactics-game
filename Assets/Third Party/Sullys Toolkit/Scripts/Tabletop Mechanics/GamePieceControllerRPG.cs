@@ -163,7 +163,7 @@ namespace SullysToolkit.TableTop.RPG
                 if (_displayPriorityList[i] == GamePieceType.UnitGroup && _unitOnCastPosition != null)
                     return _unitOnCastPosition;
 
-                else if (_displayPriorityList[i] == GamePieceType.PointOfInterest && _poiOnCastPosition != null)
+                else if (_displayPriorityList[i] == GamePieceType.PointOfInterestGroup && _poiOnCastPosition != null)
                     return _poiOnCastPosition;
 
                 else if (_displayPriorityList[i] == GamePieceType.Terrain && _terrainOnCastPosition != null)
@@ -223,7 +223,7 @@ namespace SullysToolkit.TableTop.RPG
 
             IEnumerable<GamePiece> poiQuery =
                 from piece in allPiecesOnPosition
-                where piece.GamePieceType() == GamePieceType.PointOfInterest
+                where piece.GamePieceType() == GamePieceType.PointOfInterestGroup
                 select piece;
 
             if (poiQuery.Any())
@@ -282,7 +282,7 @@ namespace SullysToolkit.TableTop.RPG
             {
                 //SPAWN SPECIFIED GP
                 case DevCommandState.SpawnObject:
-                    _bagOfHolding.SpawnGamePiece(DevCommandTracker.GetSpecifiedName(), DevCommandTracker.GetSpecifiedType(), targetPosition);
+                    //_bagOfHolding.SpawnGamePiece(DevCommandTracker.GetSpecifiedUnitPrefab(), DevCommandTracker.GetGamePieceType(), targetPosition);
                     break;
 
 
@@ -292,14 +292,14 @@ namespace SullysToolkit.TableTop.RPG
 
                     CaptureSelectionViaMousePosition();
 
-                    switch (DevCommandTracker.GetSpecifiedType())
+                    switch (DevCommandTracker.GetGamePieceType())
                     {
                         case GamePieceType.Terrain:
                             if (_terrainOnCastPosition != null)
                                 _terrainOnCastPosition.Despawn();
                             break;
 
-                        case GamePieceType.PointOfInterest:
+                        case GamePieceType.PointOfInterestGroup:
                             if (_poiOnCastPosition != null)
                                 _poiOnCastPosition.Despawn();
                             break;

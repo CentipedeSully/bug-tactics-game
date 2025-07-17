@@ -34,7 +34,7 @@ public class DebugBoardInitializer : MonoBehaviour
                 for (int j = 0; j < rows; j++)
                 {
                     //spawn a terrain at (i,j) position
-                    _bagOfHolding.SpawnGamePiece(_desiredTerrainStart, GamePieceType.Terrain, (i, j));
+                    //_bagOfHolding.SpawnGamePiece(_desiredTerrainStart, GamePieceType.Terrain, (i, j));
                 }
             }
         }

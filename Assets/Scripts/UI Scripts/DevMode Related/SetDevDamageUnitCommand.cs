@@ -14,7 +14,7 @@ public class SetDevDamageUnitCommand : MonoBehaviour
         if (DevCommandTracker.DevModeActive())
         {
             DevCommandTracker.EnterDamageUnitMode(_damage);
-            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Target Type: {DevCommandTracker.GetSpecifiedType()}");
+            STKDebugLogger.LogStatement(_showLogs, $"Current DevCmd: {DevCommandTracker.CurrentCommand()}, Target Type: {DevCommandTracker.GetGamePieceType()}");
         }
 
     }

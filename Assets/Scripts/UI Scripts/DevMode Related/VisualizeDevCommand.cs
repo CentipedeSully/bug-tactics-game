@@ -38,12 +38,12 @@ public class VisualizeDevCommand : MonoBehaviour
                 break;
 
             case DevCommandState.SpawnObject:
-                _cmdText.text = $"Spawn {DevCommandTracker.GetSpecifiedName()} ({DevCommandTracker.GetSpecifiedType()})";
+                _cmdText.text = $"Spawn {DevCommandTracker.GetSpecifiedUnitPrefab()} ({DevCommandTracker.GetGamePieceType()})";
                 ShowAllIndicators();
                 break;
 
             case DevCommandState.DespawnObject:
-                _cmdText.text = $"Despawn {DevCommandTracker.GetSpecifiedType()}";
+                _cmdText.text = $"Despawn {DevCommandTracker.GetGamePieceType()}";
                 ShowAllIndicators();
                 break;
 

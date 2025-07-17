@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8066811877276704277}
   - component: {fileID: 8037118280097714507}
+  - component: {fileID: 564427573869514472}
   m_Layer: 0
   m_Name: Parent Game Piece
   m_TagString: Untagged
@@ -132,6 +133,17 @@ MonoBehaviour:
   _typeOfGamepiece: 0
   _isInitialized: 0
   _isInPlay: 0
-  _bagOfHolding: {fileID: 0}
   _gameBoard: {fileID: 0}
   _boardLayer: 0
+--- !u!114 &564427573869514472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7149470099753258045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b717117e58b5e245a25e2d049e7658d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

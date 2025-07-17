@@ -47,7 +47,7 @@ public class GpCreator : MonoBehaviour
             case GamePieceType.Terrain:
                 foundPrefab = _gpData.GetTerrainPrefab();
                 break;
-            case GamePieceType.PointOfInterest:
+            case GamePieceType.PointOfInterestGroup:
                 foundPrefab = _gpData.GetPoiListPrefab();
                 break;
             case GamePieceType.UnitGroup:

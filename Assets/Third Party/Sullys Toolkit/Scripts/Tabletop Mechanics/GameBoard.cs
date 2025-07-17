@@ -69,7 +69,7 @@ namespace SullysToolkit.TableTop
                     gamePiece.transform.SetParent(_unitContainer);
                     break;
 
-                case GamePieceType.PointOfInterest:
+                case GamePieceType.PointOfInterestGroup:
                     gamePiece.transform.SetParent(_poiContainer);
                     break;
 
@@ -157,6 +157,19 @@ namespace SullysToolkit.TableTop
 
             LogStatement($"GamePieces at position {xyPosition.Item1},{xyPosition.Item2} found: {querydPieces.Count}");
             return querydPieces;
+        }
+
+        public GamePiece GetPieceOnPosition((int,int) xyPosition, GamePieceType type)
+        {
+            List<GamePiece> piecesOnPosition = GetPiecesOnPosition(xyPosition);
+            foreach (GamePiece piece in piecesOnPosition)
+            {
+                if (piece.GamePieceType() == type)
+                    return piece;
+            }
+
+            return null;
+
         }
 
         public bool AddPieceToBoardState(GamePiece newGamePiece, GameBoardLayer desiredLayer, (int, int) xyDesiredPosition)
